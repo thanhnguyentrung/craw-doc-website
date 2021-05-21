@@ -59,14 +59,13 @@ for k in selector.options:
 
 #duyet qua tat ca cac linh vuc, ngoai tru linh vuc 0 (tat ca)
 
-for i in range(3,len(list_selector)):
+for i in range(len(list_selector)):
     if(list_selector[i] == '0'):
         continue
     else:
         #chon tung linh vuc
         selector = Select(browser.find_element_by_id('d_category_id'))
         selector.select_by_value(list_selector[i])
-
         try:
             print("Process categori {}".format(list_selector[i]))
             sleep(random.randint(2,5))
@@ -77,7 +76,6 @@ for i in range(3,len(list_selector)):
                 list_pagenum.append(k.text)
             #duyet cac trang
     
-
             for f in range(len(list_pagenum)):
                 # print(list_pagenum[f])
                 selector_pagenum = Select(browser.find_element_by_id('d_page_id'))
@@ -90,55 +88,18 @@ for i in range(3,len(list_selector)):
                     temp_doc = res[1]
                     total_doc = temp_doc - 50*(len(list_pagenum)-1)
                     for j in range(2,total_doc+2):
-
-                        doc_link = browser.find_element_by_xpath("//*[@id='highlight']/tbody/tr["+str(j)+"]/td[3]/a").get_attribute('href')
-
-                        browser.get(str(doc_link))
-
-                        sleep(random.randint(2,3))
-
-                        link = []
-                        link = browser.find_element_by_xpath("//*[@id='vbpq_content']/div[1]/table/tbody/tr[3]/td/table/tbody/tr/td[2]/a").get_attribute('href')
-                        download(str(link),dest_folder="./data/"+str(list_selector[i]))
-                        sleep(1)
-                        browser.execute_script("window.history.go(-1)")
-                        sleep(random.randint(2,3))
-                        #---------------chua xong_-------------------------
+                        preprocess_download(browser,list_selector,j,i)
                 else:
                     #lay tat ca cac link trong trang thuoc linh vuc do
                     for j in range(2,52):
-
-                        doc_link = browser.find_element_by_xpath("//*[@id='highlight']/tbody/tr["+str(j)+"]/td[3]/a").get_attribute('href')
-
-                        browser.get(str(doc_link))
-
-                        sleep(random.randint(2,3))
-
-                        link = []
-                        link = browser.find_element_by_xpath("//*[@id='vbpq_content']/div[1]/table/tbody/tr[3]/td/table/tbody/tr/td[2]/a").get_attribute('href')
-                        download(str(link),dest_folder="./data/"+str(list_selector[i]))
-                        sleep(1)
-                        browser.execute_script("window.history.go(-1)")
-                        sleep(random.randint(2,3))
+                        preprocess_download(browser,list_selector,j,i)
         except Exception as e:
             print("Process categori {}".format(list_selector[i]))
             raw_text = browser.find_element_by_class_name("doc_list_total").text
             res = [int(i) for i in raw_text.split() if i.isdigit()]
             total_doc = res[0]
             for j in range(2,total_doc+2):
-
-                doc_link = browser.find_element_by_xpath("//*[@id='highlight']/tbody/tr["+str(j)+"]/td[3]/a").get_attribute('href')
-
-                browser.get(str(doc_link))
-
-                sleep(random.randint(2,3))
-
-                link = []
-                link = browser.find_element_by_xpath("//*[@id='vbpq_content']/div[1]/table/tbody/tr[3]/td/table/tbody/tr/td[2]/a").get_attribute('href')
-                download(str(link),dest_folder="./data/"+str(list_selector[i]))
-                sleep(1)
-                browser.execute_script("window.history.go(-1)")
-                sleep(random.randint(2,3))
+                preprocess_download(browser,list_selector,j,i)
 
 browser.close()
 
